@@ -1,6 +1,8 @@
 import { db } from "./firebase.js"
 
 let cafeList = document.querySelector("#cafe-list");
+let form = document.querySelector("#add-cafe-form")
+
 const renderDoc = doc => {
     let li = document.createElement("li");
     let name = document.createElement("span")
@@ -11,9 +13,20 @@ const renderDoc = doc => {
     li.appendChild(name)
     li.appendChild(city)
     cafeList.appendChild(li)
+
 }
 db.collection("cafes").get().then((snapshot) => {
-    snapshot.forEach((doc) => {
+    snapshot.docs.forEach((doc) => {
         renderDoc(doc)
     })
+})
+
+form.addEventListener("submit", (e) => {
+    e.preventDefault()
+    db.collection("cafes").add({
+        name: form.name.value,
+        city: form.city.value
+    })
+    form.name.value = ""
+    form.city.value = ""
 })
