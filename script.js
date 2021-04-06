@@ -2,13 +2,6 @@ import { db } from "./firebase.js"
 
 let cafeList = document.querySelector("#cafe-list");
 let form = document.querySelector("#add-cafe-form")
-let btn = document.querySelector("#search")
-btn = {
-    city: "city",
-    arr: ">",
-    value: "chattogram"
-}
-
 const renderDoc = doc => {
     let li = document.createElement("li");
 
@@ -34,10 +27,22 @@ const renderDoc = doc => {
 
 
 }
+///getting data:
 // db.collection("cafes").where(btn.city, btn.arr, btn.value).get().then((snapshot) => {
-db.collection("cafes").get().then((snapshot) => {
-    snapshot.docs.forEach((doc) => {
-        renderDoc(doc)
+// db.collection("cafes").orderBy("city").get().then((snapshot) => {
+//     snapshot.docs.forEach((doc) => {
+//         renderDoc(doc)
+//     })
+// })
+db.collection("cafes").onSnapshot((snapshot) => {
+    let change = snapshot.docChanges();
+    change.forEach((chng) => {
+        if (chng.type === "added") {
+            renderDoc(chng.doc)
+        } else if (chng.type === "removed") {
+            let li = cafeList.querySelector("[data-id=" + chng.doc.id + "]")
+            cafeList.removeChild(li)
+        }
     })
 })
 
