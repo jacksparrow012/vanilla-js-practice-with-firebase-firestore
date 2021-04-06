@@ -2,6 +2,12 @@ import { db } from "./firebase.js"
 
 let cafeList = document.querySelector("#cafe-list");
 let form = document.querySelector("#add-cafe-form")
+let btn = document.querySelector("#search")
+btn = {
+    city: "city",
+    arr: ">",
+    value: "chattogram"
+}
 
 const renderDoc = doc => {
     let li = document.createElement("li");
@@ -28,13 +34,15 @@ const renderDoc = doc => {
 
 
 }
+// db.collection("cafes").where(btn.city, btn.arr, btn.value).get().then((snapshot) => {
 db.collection("cafes").get().then((snapshot) => {
     snapshot.docs.forEach((doc) => {
         renderDoc(doc)
     })
-
-
 })
+
+
+
 
 form.addEventListener("submit", (e) => {
     e.preventDefault()
